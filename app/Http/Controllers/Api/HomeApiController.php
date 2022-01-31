@@ -15,7 +15,20 @@ class HomeApiController extends BaseApiController
      */
     public function index()
     {
-        
+        $errors = '';
+
+        try {
+            $posts = Post::join('users', 'posts.user_id', '=', 'users.id')
+                    ->orderBy('posts.created_at', 'desc')
+                    ->get();
+
+            return $this->makeSuccessResponse([
+                'posts' => $posts
+            ]);
+        } catch (Exception $e) {
+            $errors = __('validation.app_db_failed');
+            return $this->makeErrorResponse($errors);
+        }
     }
 
     /**
@@ -35,20 +48,7 @@ class HomeApiController extends BaseApiController
      */
     public function show($role)
     {
-        $errors = '';
-
-        try {
-            $posts = Post::join('users', 'posts.user_id', '=', 'users.id')
-                    ->orderBy('posts.created_at', 'desc')
-                    ->get();
-
-            return $this->makeSuccessResponse([
-                'posts' => $posts
-            ]);
-        } catch (Exception $e) {
-            $errors = __('validation.app_db_failed');
-            return $this->makeErrorResponse($errors);
-        }
+        
     }
 
     /**
